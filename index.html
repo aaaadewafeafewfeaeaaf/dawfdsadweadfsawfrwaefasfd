@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TACSIM STUDIOS - Documentation Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a2e;
+            --tertiary-bg: #16213e;
+            --accent-bg: #0f0f23;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #999999;
+            --accent-blue: #00d4ff;
+            --accent-pink: #ff00d4;
+            --accent-green: #00ff88;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f59e0b;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-hover: rgba(255, 255, 255, 0.15);
+            --border-radius-sm: 12px;
+            --border-radius-md: 20px;
+            --border-radius-lg: 30px;
+            --border-radius-xl: 50px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --shadow-sm: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 20px 40px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, var(--primary-bg), var(--secondary-bg), var(--tertiary-bg), var(--accent-bg));
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120,219,255,0.2) 0%, transparent 50%);
+            animation: floatOrbs 12s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="rgba(255,255,255,0.02)" fill-opacity="0.4"><circle cx="30" cy="30" r="1"/></g></svg>');
+            animation: drift 20s linear infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes floatOrbs {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-60px, -60px); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+    .main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all var(--transition-normal);
+}
+
+
+       .nav-brand {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            animation: fadeInUp 1s ease both;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-pink), var(--accent-green));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 400;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .doc-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 2rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+            transform: translateX(-100%);
+            transition: transform var(--transition-normal);
+        }
+
+        .doc-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .doc-card:hover {
+            background: var(--glass-hover);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .doc-card.rpf7::before {
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-green));
+        }
+
+        .doc-card.reverse-eng::before {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
+        }
+
+        .doc-card.coming-soon::before {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-orange));
+        }
+
+        .doc-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.5rem;
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+            transition: all var(--transition-normal);
+        }
+
+        .doc-card:hover .doc-icon {
+            animation: pulse 0.6s ease;
+        }
+
+        .doc-card.rpf7 .doc-icon {
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-green));
+        }
+
+        .doc-card.reverse-eng .doc-icon {
+            background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
+        }
+
+        .doc-card.coming-soon .doc-icon {
+            background: linear-gradient(45deg, var(--accent-purple), var(--accent-orange));
+        }
+
+        .doc-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .doc-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .doc-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .doc-status {
+            padding: 4px 12px;
+            border-radius: var(--border-radius-xl);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-available {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .status-coming-soon {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-purple);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 20px;
+            margin-top: 4rem;
+            border-top: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            margin-bottom: 2rem;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .footer-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .footer-link:hover {
+            color: var(--accent-pink);
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            animation: float 8s linear infinite;
+        }
+
+        .floating-element:nth-child(2) {
+            left: 20%;
+            animation-delay: -2s;
+            background: var(--accent-pink);
+        }
+
+        .floating-element:nth-child(3) {
+            left: 40%;
+            animation-delay: -4s;
+            background: var(--accent-green);
+        }
+
+        .floating-element:nth-child(4) {
+            left: 60%;
+            animation-delay: -6s;
+            background: var(--accent-purple);
+        }
+
+        .floating-element:nth-child(5) {
+            left: 80%;
+            animation-delay: -8s;
+            background: var(--accent-orange);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .docs-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 15px;
+            }
+
+            .doc-card {
+                padding: 1.5rem;
+            }
+
+            .main-nav {
+                top: 10px;
+                padding: 12px 20px;
+            }
+
+            .nav-brand {
+                font-size: 20px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-content {
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-brand">TACSIM STUDIOS</div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+       <div class="hero-content">
+        <h1 class="hero-title">TACSIM STUDIOS Documentation Hub</h1>
+        <p class="hero-subtitle">Plugins · Development · Reverse Engineering · More</p>
+        <p class="hero-description">
+            This hub is the central place for all TACSIM STUDIOS documentation.  
+            It includes references for our plugins, detailed development guides,  
+            reverse engineering research, and additional resources we create over time.  
+            Whether you're here for technical specifications, learning materials,  
+            or implementation guides — this is where it all comes together.
+        </p>
+    </div>
+
+        <!-- Documentation Grid -->
+        <div class="docs-grid">
+            <!-- RPF7 Documentation -->
+            <a href="docs/RPF7Files.html" class="doc-card rpf7">
+                <div class="doc-icon">RPF</div>
+                <h3 class="doc-title">RPF7 Archive Format</h3>
+                <p class="doc-description">
+                    Complete technical specification for the RAGE Package File (RPF) format used in Grand Theft Auto V. 
+                    Includes encryption methods, compression algorithms, and data structure documentation with practical examples.
+                </p>
+                <div class="doc-meta">
+                    <span>Reverse Engineering</span>
+                    <span class="doc-status status-available">Available</span>
+                </div>
+            </a>
+
+            <!-- General Reverse Engineering Guide -->
+                 <div class="doc-card coming-soon">
+            <div class="doc-icon">📚</div>
+            <h3 class="doc-title">More Documentation Coming Soon</h3>
+            <p class="doc-description">
+                This hub will expand with plugin documentation, reverse engineering research, 
+                and developer guides. Stay tuned for updates as we continue building our knowledge base.
+            </p>
+            <div class="doc-meta">
+                <span>Documentation Hub</span>
+                <span class="doc-status status-coming-soon">Coming Soon</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3 class="footer-title">TACSIM STUDIOS Research Division</h3>
+           
+        </div>
+        <div class="footer-links">
+             <a href="https://tacsimstudios.xyz/terms.html" style="color: #00d4ff; text-decoration: none;">Terms of Service</a>
+            <a href="https://tacsimstudios.xyz/privacy.html" style="color: #00d4ff; text-decoration: none;" >Privacy Policy</a>
+        </div>
+    </footer>
+
+    <script>
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add staggered animation to doc cards
+            const docCards = document.querySelectorAll('.doc-card');
+            docCards.forEach((card, index) => {
+                card.style.animationDelay = `${0.8 + (index * 0.1)}s`;
+                card.style.animation = 'fadeInUp 1s ease both';
+            });
+
+            // Add parallax effect to floating elements
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                document.querySelectorAll('.floating-element').forEach((el, index) => {
+                    const speed = (index + 1) * 0.5;
+                    const x = mouseX * speed * 10;
+                    const y = mouseY * speed * 10;
+                    el.style.transform = `translate(${x}px, ${y}px)`;
+                });
+            });
+
+            // Add smooth hover effects
+            docCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+
+        // Add some visual feedback for coming soon items
+        document.querySelectorAll('.coming-soon').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Create a temporary notification
+                const notification = document.createElement('div');
+                notification.innerHTML = '🚧 Coming Soon! This documentation is still in development.';
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: var(--glass-bg);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid var(--glass-border);
+                    border-radius: var(--border-radius-md);
+                    padding: 1.5rem 2rem;
+                    color: var(--text-primary);
+                    z-index: 10000;
+                    animation: fadeInUp 0.3s ease;
+                    text-align: center;
+                    font-weight: 600;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'fadeInUp 0.3s ease reverse';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            });
+        });
+
+      
+    </script>
+</body>
+</html>

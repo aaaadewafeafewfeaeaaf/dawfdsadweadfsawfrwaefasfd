@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPF7 Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a2e;
+            --tertiary-bg: #16213e;
+            --accent-bg: #0f0f23;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #999999;
+            --accent-blue: #00d4ff;
+            --accent-pink: #ff00d4;
+            --accent-green: #00ff88;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-hover: rgba(255, 255, 255, 0.15);
+            --border-radius-sm: 12px;
+            --border-radius-md: 20px;
+            --border-radius-xl: 50px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --shadow-sm: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, var(--primary-bg), var(--secondary-bg), var(--tertiary-bg), var(--accent-bg));
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120,219,255,0.2) 0%, transparent 50%);
+            animation: floatOrbs 12s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes floatOrbs {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 10px 15px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all var(--transition-normal);
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--glass-hover);
+        }
+
+        .docs-container {
+            display: flex;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .docs-sidebar {
+            width: 320px;
+            min-width: 320px;
+            padding: 30px 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            transition: transform var(--transition-normal);
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+            padding: 0 30px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-link {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-fast);
+            font-size: 15px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover {
+            color: var(--text-primary);
+            background: var(--glass-hover);
+            transform: translateX(5px);
+        }
+
+        .sidebar-link.active {
+            color: var(--accent-blue);
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .docs-content {
+            flex: 1;
+            padding: 40px 50px;
+            max-width: calc(100vw - 320px);
+        }
+
+        .breadcrumb {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breadcrumb-separator {
+            color: var(--accent-blue);
+        }
+
+        .content-wrapper {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 40px;
+            line-height: 1.8;
+        }
+
+        .content-section {
+            scroll-margin-top: 100px;
+        }
+
+        .content-wrapper h1 {
+            color: var(--text-primary);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            scroll-margin-top: 100px;
+        }
+
+        .content-wrapper h2 {
+            color: var(--text-primary);
+            font-size: 1.8em;
+            margin: 40px 0 20px 0;
+            border-bottom: 2px solid var(--glass-border);
+            padding-bottom: 10px;
+            scroll-margin-top: 100px;
+        }
+
+        .content-wrapper h3 {
+            color: var(--accent-blue);
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+            scroll-margin-top: 100px;
+        }
+
+        .content-wrapper h4 {
+            color: var(--accent-green);
+            font-size: 1.2em;
+            margin: 25px 0 15px 0;
+            scroll-margin-top: 100px;
+        }
+
+        .content-wrapper p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .content-wrapper ul, .content-wrapper ol {
+            color: var(--text-secondary);
+            margin: 16px 0 16px 24px;
+        }
+
+        .content-wrapper li {
+            margin-bottom: 8px;
+        }
+
+        .content-wrapper table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: var(--accent-bg);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .content-wrapper th,
+        .content-wrapper td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .content-wrapper th {
+            background: var(--glass-bg);
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .content-wrapper td {
+            color: var(--text-secondary);
+        }
+
+        .content-wrapper code {
+            background: var(--accent-bg);
+            color: var(--accent-green);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .content-wrapper pre {
+            background: var(--accent-bg);
+            padding: 25px;
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--accent-blue);
+            overflow-x: auto;
+            margin: 25px 0;
+            box-shadow: var(--shadow-sm);
+            color: var(--text-primary);
+        }
+
+        .content-wrapper strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--glass-border);
+            border-top: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            border-radius: var(--border-radius-sm);
+            margin: 20px 0;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+        }
+
+        .footer-link:hover {
+            color: var(--accent-pink);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 1024px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .docs-sidebar {
+                position: fixed;
+                transform: translateX(-100%);
+                width: 320px;
+                z-index: 999;
+                top: 70px;
+                height: calc(100vh - 70px);
+            }
+
+            .docs-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .docs-content {
+                margin-left: 0;
+                max-width: 100vw;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                padding: 0 20px;
+            }
+
+            .nav-brand {
+                font-size: 24px;
+            }
+
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            .content-wrapper h1 {
+                font-size: 2em;
+            }
+
+            .content-wrapper h2 {
+                font-size: 1.5em;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-brand">RPF7 Documentation</div>
+        <button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
+    </nav>
+
+    <!-- Main Documentation Layout -->
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+      <aside class="docs-sidebar" id="sidebar">
+    <div class="sidebar-section">
+        <h3 class="sidebar-title">Navigation</h3>
+        <ul class="sidebar-menu">
+            <li><a class="sidebar-link" href="/./index.html">← Back to Main Menu</a></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-section">
+        <h3 class="sidebar-title">RPF7 Format</h3>
+        <ul class="sidebar-menu">
+            <li><a class="sidebar-link" onclick="scrollToSection('overview')" data-section="overview">Overview</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('header')" data-section="header">Header Structure</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('toc')" data-section="toc">Table of Contents</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('directory')" data-section="directory">Directory Entries</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('files')" data-section="files">File Entries</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('filenames')" data-section="filenames">Filename Section</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('compression')" data-section="compression">Compression</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('encryption')" data-section="encryption">Encryption</a></li>
+            <li><a class="sidebar-link" onclick="scrollToSection('examples')" data-section="examples">Examples</a></li>
+        </ul>
+    </div>
+</aside>
+
+
+        <!-- Main Content Area -->
+        <main class="docs-content">
+            <div class="breadcrumb">
+                <span>TACSIM STUDIOS Documentation</span>
+                <span class="breadcrumb-separator">></span>
+                <span id="current-page">RPF7 Format</span>
+            </div>
+
+            <div id="content" class="content-wrapper">
+    <h1 id="overview" class="content-section">RPF Archive</h1>
+
+    <p><strong>RPF</strong> (RAGE Package File) is an archive format used in Grand Theft Auto V to store game assets in a structured, compressed, and encrypted container. The format supports hierarchical organization of files and directories with multiple encryption schemes to protect game data.</p>
+
+    <h2 id="header" class="content-section">File Format</h2>
+
+    <h3>Header</h3>
+    <p>The RPF archive begins with a 16-byte header containing essential metadata:</p>
+
+    <table>
+        <thead>
+            <tr><th>Offset</th><th>Size</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>0x00</td><td>4 bytes</td><td><strong>Magic/Version</strong> - <code>0x52504637</code> ("RPF7" in ASCII) for GTA V</td></tr>
+            <tr><td>0x04</td><td>4 bytes</td><td><strong>TOC Size</strong> - Size of the Table of Contents in bytes</td></tr>
+            <tr><td>0x08</td><td>4 bytes</td><td><strong>Entry Count</strong> - Total number of entries (directories + files)</td></tr>
+            <tr><td>0x0C</td><td>4 bytes</td><td><strong>Encryption Flag</strong> - Specifies the encryption scheme used</td></tr>
+        </tbody>
+    </table>
+
+    <p><strong>Example Header (Hex):</strong></p>
+    <pre>37 46 50 52  00 10 00 00  20 00 00 00  4F 50 45 4E</pre>
+
+    <p>Breaking down this example:</p>
+    <ul>
+        <li><code>37 46 50 52</code> = "RPF7" magic signature</li>
+        <li><code>00 10 00 00</code> = TOC size of 4096 bytes (0x1000)</li>
+        <li><code>20 00 00 00</code> = 32 entries total (0x20)</li>
+        <li><code>4F 50 45 4E</code> = "OPEN" encryption flag (unencrypted)</li>
+    </ul>
+
+    <h3 id="toc" class="content-section">Table of Contents (TOC)</h3>
+    <p>The Table of Contents is located at <strong>offset 2048</strong> (0x800) from the file start and contains the archive's directory structure.</p>
+
+    <ul>
+        <li>Each entry is <strong>16 bytes</strong> in length</li>
+        <li>Describes hierarchical organization of files and directories</li>
+        <li>Contains offsets, sizes, and pointers to the filename section</li>
+    </ul>
+
+    <h4 id="directory" class="content-section">Directory Entry Structure</h4>
+    <table>
+        <thead>
+            <tr><th>Offset</th><th>Size</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>0x00</td><td>3 bytes</td><td><strong>Name Offset</strong> - Offset into filename section</td></tr>
+            <tr><td>0x03</td><td>1 byte</td><td><strong>Entry Type</strong> - <code>0x80</code> for directory</td></tr>
+            <tr><td>0x04</td><td>4 bytes</td><td><strong>First Entry Index</strong> - Index of first TOC entry in directory</td></tr>
+            <tr><td>0x08</td><td>4 bytes</td><td><strong>Entry Count</strong> - Number of entries in directory</td></tr>
+            <tr><td>0x0C</td><td>4 bytes</td><td><strong>Reserved</strong> - Duplicate count (alignment purposes)</td></tr>
+        </tbody>
+    </table>
+
+    <p><strong>Example Directory Entry (Hex):</strong></p>
+    <pre>00 00 00 80  01 00 00 00  05 00 00 00  05 00 00 00</pre>
+    <p>Breaking down this example:</p>
+    <ul>
+        <li><code>00 00 00</code> = Name offset 0 (points to first filename)</li>
+        <li><code>80</code> = Directory type flag</li>
+        <li><code>01 00 00 00</code> = First entry index is 1</li>
+        <li><code>05 00 00 00</code> = Contains 5 entries</li>
+        <li><code>05 00 00 00</code> = Duplicate count (5)</li>
+    </ul>
+
+    <h4 id="files" class="content-section">File Entry Structure</h4>
+    <table>
+        <thead>
+            <tr><th>Offset</th><th>Size</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>0x00</td><td>3 bytes</td><td><strong>Name Offset</strong> - Offset into filename section</td></tr>
+            <tr><td>0x03</td><td>1 byte</td><td><strong>Entry Type</strong> - <code>0x00</code> for file</td></tr>
+            <tr><td>0x04</td><td>4 bytes</td><td><strong>Data Offset</strong> - File data offset in 512-byte blocks</td></tr>
+            <tr><td>0x08</td><td>4 bytes</td><td><strong>Compressed Size</strong> - Size of compressed data in bytes</td></tr>
+            <tr><td>0x0C</td><td>4 bytes</td><td><strong>Uncompressed Size</strong> - Original file size in bytes</td></tr>
+        </tbody>
+    </table>
+
+    <p><strong>Example File Entry (Hex):</strong></p>
+    <pre>08 00 00 00  10 00 00 00  80 15 00 00  00 20 00 00</pre>
+    <p>Breaking down this example:</p>
+    <ul>
+        <li><code>08 00 00</code> = Name offset 8 (points to filename at offset 8)</li>
+        <li><code>00</code> = File type flag</li>
+        <li><code>10 00 00 00</code> = Data starts at block 16 (16 × 512 = 8192 bytes offset)</li>
+        <li><code>80 15 00 00</code> = Compressed size is 5504 bytes (0x1580)</li>
+        <li><code>00 20 00 00</code> = Uncompressed size is 8192 bytes (0x2000)</li>
+    </ul>
+
+    <h3 id="filenames" class="content-section">Filename Section</h3>
+    <p>The filename section immediately follows the TOC at offset: <code>2048 + (16 × number of entries)</code></p>
+
+    <ul>
+        <li>Contains null-terminated UTF-8 strings</li>
+        <li>Stores all filenames and directory names</li>
+        <li>Name offsets in TOC entries reference this section</li>
+    </ul>
+
+    <p><strong>Example Filename Section (Hex):</strong></p>
+    <pre>
+72 6F 6F 74 00 74 65 78 74 75 72 65 73 00 6D 6F 
+64 65 6C 73 00 73 63 72 69 70 74 73 00 6D 61 70 
+2E 79 6D 61 70 00 63 61 72 2E 79 64 72 00
+    </pre>
+
+    <p><strong>Decoded strings:</strong></p>
+    <ul>
+        <li>Offset 0: <code>root\0</code></li>
+        <li>Offset 5: <code>textures\0</code></li>
+        <li>Offset 14: <code>models\0</code></li>
+        <li>Offset 21: <code>scripts\0</code></li>
+        <li>Offset 29: <code>map.ymap\0</code></li>
+        <li>Offset 38: <code>car.ydr\0</code></li>
+    </ul>
+
+    <h2 id="compression" class="content-section">Compression</h2>
+    <p>Files within RPF archives use <strong>zlib compression</strong> with the deflate header removed:</p>
+    <ul>
+        <li>If compressed size equals uncompressed size, the file is stored uncompressed</li>
+        <li>Compression reduces archive size while maintaining data integrity</li>
+        <li>Decompression is handled transparently during file access</li>
+    </ul>
+
+    <h2 id="encryption" class="content-section">Encryption</h2>
+    <p>The RPF format implements multiple encryption schemes to protect game assets and prevent unauthorized modification.</p>
+
+    <h3>Encryption Types</h3>
+    <table>
+        <thead>
+            <tr><th>Flag Value</th><th>Name</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>0x00000000</code></td><td><strong>NONE</strong></td><td>No encryption - raw or compressed data only</td></tr>
+            <tr><td><code>0x4E45504F</code></td><td><strong>OPEN</strong></td><td>Unencrypted format (ASCII "OPEN") - modding-friendly</td></tr>
+            <tr><td><code>0x0FFFFFF9</code></td><td><strong>AES</strong></td><td>AES-256 encryption in ECB mode</td></tr>
+            <tr><td><code>0x0FEFFFFF</code></td><td><strong>NG</strong></td><td>Rockstar's proprietary encryption method</td></tr>
+        </tbody>
+    </table>
+
+    <p><strong>Example Encryption Flags (Hex):</strong></p>
+    <pre>
+NONE:  00 00 00 00
+OPEN:  4F 50 45 4E
+AES:   F9 FF FF 0F
+NG:    FF FF FE 0F
+    </pre>
+
+    <h3>AES Encryption</h3>
+    <ul>
+        <li><strong>Algorithm</strong>: Rijndael AES-256</li>
+        <li><strong>Mode</strong>: ECB (Electronic Codebook)</li>
+        <li><strong>Padding</strong>: None</li>
+        <li><strong>Key Size</strong>: 32 bytes (256-bit)</li>
+        <li><strong>Block Size</strong>: 16 bytes</li>
+    </ul>
+    <p><strong>Encrypted Components:</strong></p>
+    <ul>
+        <li>Table of Contents entries</li>
+        <li>Filename section</li>
+        <li>File content (in 16-byte blocks)</li>
+    </ul>
+
+    <h3>NG Encryption (Proprietary)</h3>
+    <p>Rockstar's proprietary "NG" encryption is significantly more complex than AES:</p>
+    <ul>
+        <li>Multi-round encryption with 17 rounds</li>
+        <li>Each round uses 4 subkeys (68 total)</li>
+        <li>Large precomputed lookup tables</li>
+        <li>Dynamic key derivation per file</li>
+        <li>File-specific encryption ties security to file identity</li>
+    </ul>
+
+    <h3>File-Level Encryption</h3>
+    <ul>
+        <li>Encryption flag in file entry indicates encrypted status</li>
+        <li>NG-encrypted files use file-specific derived keys</li>
+        <li>Key derivation combines filename hash with file size</li>
+    </ul>
+
+    <h2>Technical Implementation</h2>
+    <h3>Data Access</h3>
+    <ol>
+        <li>Parse RPF header to determine encryption type</li>
+        <li>Decrypt TOC if encryption is enabled</li>
+        <li>Navigate directory structure</li>
+        <li>Locate target file entry and retrieve data offset</li>
+        <li>Decrypt and decompress file data as needed</li>
+    </ol>
+
+    <h3>Block Alignment</h3>
+    <ul>
+        <li>File data offsets are in 512-byte blocks</li>
+        <li>AES works on 16-byte boundaries</li>
+        <li>NG can handle partial blocks</li>
+    </ul>
+
+    <h2 id="examples" class="content-section">Usage in GTA V</h2>
+    <footer style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--glass-border); font-size: 0.9rem; color: var(--text-muted); text-align: center;">
+        <p><em>This research was conducted by <strong>TACSIM STUDIOS</strong> as part of research project <strong>"Project 0x52504637"</strong>. This article documents the technical specifications of the RPF archive format as used in Grand Theft Auto V. Information is provided for educational and research purposes.</em></p>
+        
+        <div class="footer-links">
+            <a href="https://tacsimstudios.xyz/terms.html" style="color: #00d4ff; text-decoration: none;">Terms of Service</a>
+            <a href="https://tacsimstudios.xyz/privacy.html" style="color: #00d4ff; text-decoration: none;" >Privacy Policy</a>
+        </div>
+    </footer>
+</div>
+
+        </main>
+    </div>
+
+    <script>
+        // Store section elements for intersection observer
+        let sections = [];
+        let sidebarLinks = [];
+
+        // Navigation functionality
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                // Calculate offset to account for fixed navbar
+                const navHeight = 70;
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - navHeight - 20;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Close mobile sidebar
+                closeMobileSidebar();
+            }
+        }
+
+        function updateActiveSection() {
+            const scrollY = window.scrollY + 150; // Offset for better UX
+            
+            // Find the current section
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.id;
+                }
+            });
+            
+            // Update sidebar links
+            sidebarLinks.forEach(link => {
+                if (link.dataset.section === currentSection) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('open');
+        }
+
+       
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('open') && 
+                !sidebar.contains(e.target) && 
+                !mobileBtn.contains(e.target)) {
+                closeMobileSidebar();
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all sections and sidebar links
+            sections = Array.from(document.querySelectorAll('.content-section'));
+            sidebarLinks = Array.from(document.querySelectorAll('.sidebar-link'));
+            
+            // Set up scroll listener
+            window.addEventListener('scroll', updateActiveSection);
+            
+            // Initial check
+            updateActiveSection();
+        });
+    </script>
+</body>
+
+</html>
